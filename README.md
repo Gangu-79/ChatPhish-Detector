@@ -200,20 +200,3 @@ python run_crawler.py https://example.com --env safari_iphone
 | *Phishpedia* | Baseline | 26.0% | — | — | — | — | — | — | — |
 | *PhishStorm* | Baseline | 52.0% | 75.1% | 52.8% | 61.4% | — | — | — | — |
 
----
-
-## 🎓 Viva & Project Defense Preparation
-
-### 1. What is the fundamental novelty of ChatPhishDetector compared to traditional machine learning classifiers?
-**Answer:** Traditional anti-phishing systems rely on feature engineering (URL length, IP address presence, keyword frequency) or reference databases of brand logos (Phishpedia). Attackers easily bypass them by using novel brands, brandless phishing, or obfuscated HTML. ChatPhishDetector treats phishing detection as a contextual reasoning problem, prompting an LLM to simultaneously evaluate visual mimicry, domain inconsistency, and psychological social engineering manipulation.
-
-### 2. Why does the paper implement two distinct modes: Normal Mode vs. Vision Mode?
-**Answer:**
-- **Normal Mode (Text-only):** Uses URL, simplified HTML, and OCR text extracted from screenshots. It is highly cost-effective ($0.002 - $0.046 per request) and works with text-only LLMs like Llama 3 70B or GPT-4.
-- **Vision Mode (Multimodal):** Directly supplies the screenshot image to vision-capable LLMs (GPT-4V / GPT-4o). This eliminates OCR extraction errors and allows the model to inspect visual cues like brand logo placement, visual similarity, and fake trust badges directly, achieving the highest precision (98.7%) and recall (99.6%).
-
-### 3. How does Algorithm 1 prevent token limit exhaustion?
-**Answer:** Typical non-phishing web pages contain a median of 74,937 tokens, which easily exceeds standard LLM context windows (4,096 tokens). Algorithm 1 strips high-token low-relevance tags (`<style>`, `<script>`, comments), unwraps non-essential wrappers, shortens base64 images and long URLs, and prunes elements from the midpoint of the DOM until the token count is strictly within 2,500 tokens, preserving top tags (`<title>`, `<meta>`) and bottom forms/inputs.
-
-### 4. What is the exact classification decision rule?
-**Answer:** A website is classified as **phishing** if `phishing == True` OR `suspicious_domain == True`. It is classified as **legitimate** only if both are `False`. If the LLM returns `unknown` or fails to parse, it is separately flagged as insufficient evidence rather than misclassified as benign.

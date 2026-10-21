@@ -64,6 +64,11 @@ st.markdown("""
         border-radius: 8px;
         margin-bottom: 1rem;
     }
+    /* Hide Streamlit default Deploy button, toolbar, and header (not in base paper) */
+    .stDeployButton, [data-testid="stToolbar"], #MainMenu, header, footer {
+        display: none !important;
+        visibility: hidden !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -115,11 +120,10 @@ def main():
         unsafe_allow_html=True,
     )
 
-    # Navigation Tabs
-    tab_scan, tab_benchmarks, tab_methodology = st.tabs([
+    # Navigation Tabs (Only the Paper's Scanner and Evaluation Benchmark)
+    tab_scan, tab_benchmarks = st.tabs([
         "🔍 Live Website Scanner",
         "📊 Paper Benchmarks & Evaluation",
-        "📖 Research Methodology & Viva Guide",
     ])
 
     # ==========================================================================
@@ -373,46 +377,6 @@ def main():
                     df_details[["url", "category", "ground_truth", "prediction", "correct", "phishing_score", "brands"]],
                     use_container_width=True,
                 )
-
-    # ==========================================================================
-    # TAB 3: Research Methodology & Viva Guide
-    # ==========================================================================
-    with tab_methodology:
-        st.markdown("### IEEE Research Paper: Core Concepts & Viva Q&A")
-
-        st.markdown("""
-        #### 1. Why does ChatPhishDetector outperform traditional methods like Phishpedia?
-        * **Phishpedia & Visual Similarity tools** require a database of pre-indexed logos. If an attacker uses a brand with no logo or a modified logo (17.2% of phishing sites in the paper's dataset), Phishpedia fails completely (achieving only 26.0% precision).
-        * **ChatPhishDetector** uses LLMs to understand the *psychological context* and *social engineering manipulation* (threat of account closure, urgent fines, fake virus alerts), allowing it to detect brandless and novel attacks.
-
-        #### 2. Why is JavaScript-Rendered DOM necessary (Section III-A)?
-        * Modern phishing kits use obfuscated JavaScript to inject the login forms and credentials fields dynamically into the DOM after page load.
-        * If a crawler only fetches raw static HTML (like Python `requests`), the login form doesn't exist yet! Chrome DevTools Protocol allows waiting for JS to execute before reading `document.documentElement.outerHTML`.
-
-        #### 3. How does Algorithm 1 (HTML Simplification) work?
-        1. Remove `<style>`, `<script>`, and `<!-- comments -->`.
-        2. If tokens $< 2500$, return.
-        3. Unwrap non-essential tags (e.g. `div`, `span`, `section`) while preserving important tags (`title`, `meta`, `h1`-`h6`, `p`, `a`, `img`, `form`, `input`).
-        4. Remove tags without text content.
-        5. Shorten base64 `src` in `<img>` and lengthy URLs in `<a>`.
-        6. Iteratively remove elements from the midpoint of the DOM until token count $\le 2500$.
-
-        #### 4. What is the Paper's Classification Decision Rule?
-        $$\\text{Verdict} = \\begin{cases} 
-        \\text{Phishing}, & \\text{if } \\text{phishing} = \\text{True} \\lor \\text{suspicious\\_domain} = \\text{True} \\\\
-        \\text{Legitimate}, & \\text{if } \\text{phishing} = \\text{False} \\land \\text{suspicious\\_domain} = \\text{False} \\\\
-        \\text{Unknown}, & \\text{otherwise}
-        \\end{cases}$$
-
-        #### 5. What are the 7 Types of Evidence identified in Section V-G?
-        1. **Domain Legitimacy:** Inconsistencies between brand name and domain (e.g. `paypal-update.com` vs `paypal.com`).
-        2. **Fake Security Warnings:** Virus alerts and technical support scams.
-        3. **Fake Account Issues:** Urgent notifications about account suspension.
-        4. **Urgent Payment Requests:** Fake customs or parcel overweight charges.
-        5. **Fake Login Errors:** Unsolicited error alerts before credentials are typed.
-        6. **Fake Rewards:** Lottery, cryptocurrency, or cash prize baits.
-        7. **Credential / 2FA Theft:** Unprompted requests for SMS codes and OTPs.
-        """)
 
 
 if __name__ == "__main__":
