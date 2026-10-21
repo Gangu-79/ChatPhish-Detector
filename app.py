@@ -96,14 +96,7 @@ def main():
     model_choice = st.sidebar.selectbox(
         "Model:",
         options=["gpt-4o", "gpt-4", "gpt-3.5-turbo", "Local Heuristic Engine"],
-        help="Select LLM model. Uses OpenAI API if key is provided, or the Local Heuristic Engine implementing Section V-G rules.",
-    )
-
-    api_key_input = st.sidebar.text_input(
-        "OpenAI API Key (Optional):",
-        value=os.getenv("OPENAI_API_KEY", ""),
-        type="password",
-        help="Leave blank to use the offline/heuristic engine that evaluates Section V-G rules.",
+        help="Select LLM model as evaluated in Section V-A1.",
     )
 
     st.sidebar.markdown("---")
@@ -216,7 +209,6 @@ def main():
             )
 
             detector = PhishingDetector(
-                api_key=api_key_input if api_key_input else None,
                 default_model=model_choice,
             )
 
