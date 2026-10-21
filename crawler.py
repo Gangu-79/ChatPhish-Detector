@@ -101,16 +101,27 @@ def find_chrome_executable() -> Optional[str]:
         return env_path
 
     standard_paths = [
+        # Windows paths
         r"C:\Program Files\Google\Chrome\Application\chrome.exe",
         r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
         os.path.expanduser(r"~\AppData\Local\Google\Chrome\Application\chrome.exe"),
+        # Linux / Cloud Hosting (Render, Debian, Ubuntu) paths
+        "/usr/bin/google-chrome",
+        "/usr/bin/chromium",
+        "/usr/bin/chromium-browser",
+        "/snap/bin/chromium",
     ]
     for p in standard_paths:
         if os.path.exists(p):
             return p
 
     # Check PATH
-    sh_chrome = shutil.which("chrome") or shutil.which("google-chrome")
+    sh_chrome = (
+        shutil.which("google-chrome") or 
+        shutil.which("chrome") or 
+        shutil.which("chromium") or 
+        shutil.which("chromium-browser")
+    )
     return sh_chrome
 
 

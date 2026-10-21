@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: chatphish-detector
+    env: docker
+    plan: free
+    dockerfilePath: Dockerfile
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: CRAWLER_HEADLESS
+        value: "true"
